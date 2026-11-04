@@ -8,55 +8,67 @@
   
   <style>
     :root {
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --text-main: #2c3e50;
-      --text-muted: #667c8a;
-      --btn-green: #2ecc71;
-      --btn-green-hover: #27ae60;
-      --btn-blue: #3498db;
+      --bg-gradient: linear-gradient(135deg, #0a0f0d 0%, #071318 50%, #051a15 100%);
+      --card-bg: rgba(18, 30, 26, 0.65);
+      --card-border: rgba(46, 204, 113, 0.25);
+      --text-main: #e8f5e9;
+      --text-muted: #a3c2b5;
+      
+      --accent-green: #2ecc71;
+      --accent-green-glow: rgba(46, 204, 113, 0.4);
+      --accent-green-hover: rgba(46, 204, 113, 0.6);
+      
+      --btn-blue-text: #3498db;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      background-color: var(--bg-color);
+      background: var(--bg-gradient);
       color: var(--text-main);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
+      overflow-x: hidden;
     }
 
+    /* Container Aero Glass */
     .container {
-      background-color: var(--card-bg);
+      background: var(--card-bg);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid var(--card-border);
       width: 100%;
-      max-width: 400px;
-      padding: 30px 25px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      max-width: 420px;
+      padding: 40px 25px;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                  inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
       text-align: center;
     }
 
     h1 {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       margin-bottom: 8px;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
     }
 
-    p.subtitle {
+    .subtitle {
       font-size: 0.9rem;
       color: var(--text-muted);
       margin-bottom: 25px;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 18px;
       text-align: left;
     }
 
@@ -64,54 +76,78 @@
       display: block;
       font-size: 0.85rem;
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       color: var(--text-main);
+      letter-spacing: 0.5px;
     }
 
     input {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #dcdfe6;
-      border-radius: 10px;
+      padding: 13px 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
       font-size: 1rem;
+      color: #ffffff;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.25s ease;
     }
 
     input:focus {
-      border-color: var(--btn-blue);
+      border-color: var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green-glow);
+      background: rgba(255, 255, 255, 0.08);
     }
 
+    /* Pulsante Verde Glass */
     .btn {
       width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background-color: var(--btn-green);
-      color: white;
+      padding: 14px;
+      border: 1px solid rgba(46, 204, 113, 0.6);
+      border-radius: 14px;
+      background: rgba(46, 204, 113, 0.35);
+      color: #38ef7d;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       margin-top: 10px;
-      transition: background-color 0.2s;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2),
+                  0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     .btn:hover {
-      background-color: var(--btn-green-hover);
+      background: var(--accent-green-hover);
+      color: #ffffff;
+      box-shadow: 0 0 20px var(--accent-green-glow),
+                  inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
     }
 
     .back-link {
       display: inline-block;
-      margin-top: 20px;
-      color: var(--btn-blue);
+      margin-top: 25px;
+      color: var(--btn-blue-text);
       text-decoration: none;
       font-size: 0.9rem;
       font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: #5dade2;
+      text-decoration: underline;
     }
 
     .status-msg {
-      margin-top: 15px;
+      margin-top: 18px;
       font-size: 0.85rem;
+      line-height: 1.4;
     }
   </style>
 </head>
@@ -119,12 +155,12 @@
 
   <main class="container">
     <h1>Account Anonimo</h1>
-    <p class="subtitle">Senza email. Solo il tuo nickname e password.</p>
+    <p class="subtitle">Accedi o registrati solo con Nickname e Password.</p>
 
     <form id="auth-form">
       <div class="form-group">
         <label for="nickname">Nickname</label>
-        <input type="text" id="nickname" placeholder="Inserisci un nickname" required autocomplete="username">
+        <input type="text" id="nickname" placeholder="Scegli un nickname" required autocomplete="username">
       </div>
 
       <div class="form-group">
@@ -140,7 +176,7 @@
     <a href="index.html" class="back-link">← Torna alla Home</a>
   </main>
 
-  <!-- Script Firebase -->
+  <!-- Firebase Modular SDK v10 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -161,7 +197,6 @@
       measurementId: "G-38GBN96R0H"
     };
 
-    // Inizializzazione
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
@@ -169,38 +204,34 @@
     const form = document.getElementById('auth-form');
     const statusDiv = document.getElementById('status');
 
-    // Funzione di Login / Registrazione basata su Nickname
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const nickname = document.getElementById('nickname').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
 
-      // Generiamo un indirizzo email fittizio unico usando il nickname
       const fakeEmail = `${nickname}@curadime.app`;
 
       statusDiv.textContent = "Elaborazione in corso...";
-      statusDiv.style.color = "#667c8a";
+      statusDiv.style.color = "var(--text-muted)";
 
       try {
-        // Proviamo prima a fare il login
         const userCredential = await signInWithEmailAndPassword(auth, fakeEmail, password);
         statusDiv.textContent = `Bentornato/a, ${userCredential.user.displayName || nickname}!`;
-        statusDiv.style.color = "green";
+        statusDiv.style.color = "#38ef7d";
       } catch (loginError) {
-        // Se l'utente non esiste, lo registriamo
         if (loginError.code === 'auth/user-not-found' || loginError.code === 'auth/invalid-credential') {
           try {
             const newUserCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
             await updateProfile(newUserCredential.user, { displayName: nickname });
             statusDiv.textContent = `Account creato con successo! Benvenuto/a, ${nickname}.`;
-            statusDiv.style.color = "green";
+            statusDiv.style.color = "#38ef7d";
           } catch (createError) {
-            statusDiv.textContent = "Errore durante la creazione dell'account: " + createError.message;
-            statusDiv.style.color = "red";
+            statusDiv.textContent = "Errore durante la creazione: " + createError.message;
+            statusDiv.style.color = "#e74c3c";
           }
         } else {
           statusDiv.textContent = "Errore di accesso: " + loginError.message;
-          statusDiv.style.color = "red";
+          statusDiv.style.color = "#e74c3c";
         }
       }
     });
