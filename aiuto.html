@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cura di Me - Aiuto & Risorse</title>
+  <link rel="icon" type="image/jpeg" href="curadime.jpeg">
+  
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0a0f0d 0%, #071318 50%, #051a15 100%);
+      --card-bg: rgba(18, 30, 26, 0.65);
+      --card-border: rgba(46, 204, 113, 0.25);
+      --text-main: #e8f5e9;
+      --text-muted: #a3c2b5;
+      --accent-green: #2ecc71;
+      --accent-green-glow: rgba(46, 204, 113, 0.4);
+      --btn-blue-text: #3498db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+
+    .container {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid var(--card-border);
+      width: 100%;
+      max-width: 650px;
+      padding: 35px 25px;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 25px;
+    }
+
+    /* Barra di ricerca */
+    .search-box {
+      margin-bottom: 25px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      font-size: 1rem;
+      color: #ffffff;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 12px var(--accent-green-glow);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Form invio post (Riservato Admin) */
+    .admin-panel {
+      border: 1px dashed var(--accent-green);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      background: rgba(46, 204, 113, 0.05);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green-glow);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(46, 204, 113, 0.6);
+      background: rgba(46, 204, 113, 0.35);
+      color: #38ef7d;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .btn:hover {
+      background: rgba(46, 204, 113, 0.6);
+      color: #fff;
+      box-shadow: 0 0 15px var(--accent-green-glow);
+    }
+
+    /* Schede dei post */
+    .help-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: transform 0.2s;
+    }
+
+    .help-card h3 {
+      color: var(--accent-green);
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .help-card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-main);
+      white-space: pre-wrap;
+    }
+
+    .delete-btn {
+      margin-top: 12px;
+      background: rgba(231, 76, 60, 0.4);
+      border: 1px solid #e74c3c;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      color: var(--btn-blue-text);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <h1>Centro Aiuto & Risorse</h1>
+    <p class="subtitle" id="userStatus">Cerca tra le risorse e i numeri utili.</p>
+
+    <!-- Barra di Ricerca -->
+    <div class="search-box">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cerca nei titoli o nel testo...">
+    </div>
+
+    <!-- Pannello Pubblicazione Post (Visibile SOLO a Fronte ★) -->
+    <section id="adminSection" class="admin-panel" style="display: none;">
+      <h2>Pannello Admin (Fronte ★)</h2>
+      <p class="subtitle">Pubblica una nuova risorsa o numero utile</p>
+      
+      <div class="form-group">
+        <input type="text" id="postTitle" placeholder="Titolo del post (es. Telefono Amico)" required>
+      </div>
+      <div class="form-group">
+        <textarea id="postContent" placeholder="Testo del post, contatti o spiegazione..." required></textarea>
+      </div>
+      <button id="publishBtn" class="btn">Pubblica Post</button>
+      <div id="statusMsg" style="margin-top: 10px; font-size: 0.85rem; text-align: center;"></div>
+    </section>
+
+    <!-- Elenco Post Pubblicati -->
+    <h2>Risorse Disponibili</h2>
+    <div id="postsList" style="margin-top: 15px;"></div>
+
+    <a href="index.html" class="back-link">← Torna alla Home</a>
+  </main>
+
+  <!-- Script Firebase & Firestore -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyACDhEfI-bOGmGlO2z_-QwOexXV3UAKcIo",
+      authDomain: "curadite-6d9f9.firebaseapp.com",
+      projectId: "curadite-6d9f9",
+      storageBucket: "curadite-6d9f9.firebasestorage.app",
+      messagingSenderId: "822428953344",
+      appId: "1:822428953344:web:a943ae406889943d4021e5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const ADMIN_NICKNAME = "Fronte ★";
+    let currentUser = null;
+    let allPosts = [];
+
+    // Controllo Autenticazione
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      if (user && user.displayName === ADMIN_NICKNAME) {
+        document.getElementById('adminSection').style.display = 'block';
+        document.getElementById('userStatus').textContent = "Connesso come Admin (Fronte ★)";
+      }
+      loadPosts();
+    });
+
+    // Carica tutti i post da Firestore
+    async function loadPosts() {
+      const list = document.getElementById('postsList');
+      list.innerHTML = "";
+      try {
+        const querySnapshot = await getDocs(collection(db, "help_posts"));
+        allPosts = [];
+        querySnapshot.forEach((docSnap) => {
+          allPosts.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        renderPosts(allPosts);
+      } catch (err) {
+        console.error("Errore caricamento post:", err);
+      }
+    }
+
+    // Renderizza i post a schermo
+    function renderPosts(posts) {
+      const list = document.getElementById('postsList');
+      list.innerHTML = "";
+
+      if (posts.length === 0) {
+        list.innerHTML = `<p style="text-align: center; color: var(--text-muted);">Nessun post trovato.</p>`;
+        return;
+      }
+
+      posts.forEach((post) => {
+        const card = document.createElement('div');
+        card.className = 'help-card';
+        
+        let deleteBtnHTML = "";
+        if (currentUser && currentUser.displayName === ADMIN_NICKNAME) {
+          deleteBtnHTML = `<button class="delete-btn" onclick="deletePost('${post.id}')">Elimina Post</button>`;
+        }
+
+        card.innerHTML = `
+          <h3>${post.title}</h3>
+          <p>${post.content}</p>
+          ${deleteBtnHTML}
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    // Filtro di ricerca in tempo reale (cerca nel Titolo e nel Testo)
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase().trim();
+      const filtered = allPosts.filter(post => 
+        (post.title && post.title.toLowerCase().includes(term)) ||
+        (post.content && post.content.toLowerCase().includes(term))
+      );
+      renderPosts(filtered);
+    });
+
+    // Pubblica un nuovo post (Solo Admin)
+    document.getElementById('publishBtn').addEventListener('click', async () => {
+      const title = document.getElementById('postTitle').value.trim();
+      const content = document.getElementById('postContent').value.trim();
+      const statusMsg = document.getElementById('statusMsg');
+
+      if (!title || !content) {
+        statusMsg.textContent = "Compila sia il titolo che il testo!";
+        statusMsg.style.color = "#e74c3c";
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "help_posts"), {
+          title: title,
+          content: content,
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById('postTitle').value = "";
+        document.getElementById('postContent').value = "";
+        statusMsg.textContent = "Post pubblicato con successo!";
+        statusMsg.style.color = "#38ef7d";
+        loadPosts();
+      } catch (e) {
+        statusMsg.textContent = "Errore durante la pubblicazione: " + e.message;
+        statusMsg.style.color = "#e74c3c";
+      }
+    });
+
+    // Elimina post (Solo Admin)
+    window.deletePost = async (id) => {
+      if (confirm("Vuoi davvero eliminare questo post?")) {
+        await deleteDoc(doc(db, "help_posts", id));
+        loadPosts();
+      }
+    };
+  </script>
+</body>
+</html>
