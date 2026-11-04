@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cura di Me - Account</title>
+  <link rel="icon" type="image/jpeg" href="curadime.jpeg">
+  
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --text-main: #2c3e50;
+      --text-muted: #667c8a;
+      --btn-green: #2ecc71;
+      --btn-green-hover: #27ae60;
+      --btn-blue: #3498db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 400px;
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    p.subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text-main);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--btn-blue);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background-color: var(--btn-green);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+      background-color: var(--btn-green-hover);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--btn-blue);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .status-msg {
+      margin-top: 15px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <h1>Account Anonimo</h1>
+    <p class="subtitle">Senza email. Solo il tuo nickname e password.</p>
+
+    <form id="auth-form">
+      <div class="form-group">
+        <label for="nickname">Nickname</label>
+        <input type="text" id="nickname" placeholder="Inserisci un nickname" required autocomplete="username">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Inserisci la password" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn">Accedi / Registrati</button>
+    </form>
+
+    <div id="status" class="status-msg"></div>
+
+    <a href="index.html" class="back-link">← Torna alla Home</a>
+  </main>
+
+  <!-- Script Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      updateProfile 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyACDhEfI-bOGmGlO2z_-QwOexXV3UAKcIo",
+      authDomain: "curadite-6d9f9.firebaseapp.com",
+      projectId: "curadite-6d9f9",
+      storageBucket: "curadite-6d9f9.firebasestorage.app",
+      messagingSenderId: "822428953344",
+      appId: "1:822428953344:web:a943ae406889943d4021e5",
+      measurementId: "G-38GBN96R0H"
+    };
+
+    // Inizializzazione
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+
+    const form = document.getElementById('auth-form');
+    const statusDiv = document.getElementById('status');
+
+    // Funzione di Login / Registrazione basata su Nickname
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nickname = document.getElementById('nickname').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+
+      // Generiamo un indirizzo email fittizio unico usando il nickname
+      const fakeEmail = `${nickname}@curadime.app`;
+
+      statusDiv.textContent = "Elaborazione in corso...";
+      statusDiv.style.color = "#667c8a";
+
+      try {
+        // Proviamo prima a fare il login
+        const userCredential = await signInWithEmailAndPassword(auth, fakeEmail, password);
+        statusDiv.textContent = `Bentornato/a, ${userCredential.user.displayName || nickname}!`;
+        statusDiv.style.color = "green";
+      } catch (loginError) {
+        // Se l'utente non esiste, lo registriamo
+        if (loginError.code === 'auth/user-not-found' || loginError.code === 'auth/invalid-credential') {
+          try {
+            const newUserCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
+            await updateProfile(newUserCredential.user, { displayName: nickname });
+            statusDiv.textContent = `Account creato con successo! Benvenuto/a, ${nickname}.`;
+            statusDiv.style.color = "green";
+          } catch (createError) {
+            statusDiv.textContent = "Errore durante la creazione dell'account: " + createError.message;
+            statusDiv.style.color = "red";
+          }
+        } else {
+          statusDiv.textContent = "Errore di accesso: " + loginError.message;
+          statusDiv.style.color = "red";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
