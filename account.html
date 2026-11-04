@@ -39,7 +39,6 @@
       overflow-x: hidden;
     }
 
-    /* Container Aero Glass */
     .container {
       background: var(--card-bg);
       backdrop-filter: blur(16px) saturate(180%);
@@ -99,7 +98,6 @@
       background: rgba(255, 255, 255, 0.08);
     }
 
-    /* Pulsante Verde Glass */
     .btn {
       width: 100%;
       padding: 14px;
@@ -206,10 +204,12 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const nickname = document.getElementById('nickname').value.trim().toLowerCase();
+      const nickname = document.getElementById('nickname').value.trim();
       const password = document.getElementById('password').value;
 
-      const fakeEmail = `${nickname}@curadime.app`;
+      // Pulisce il nickname per creare un'email valida per Firebase (toglie spazi, stelle e caratteri speciali)
+      const cleanName = nickname.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      const fakeEmail = `${cleanName}@curadime.app`;
 
       statusDiv.textContent = "Elaborazione in corso...";
       statusDiv.style.color = "var(--text-muted)";
