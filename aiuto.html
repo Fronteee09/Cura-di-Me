@@ -140,7 +140,6 @@
       border-radius: 14px;
       padding: 20px;
       margin-bottom: 15px;
-      transition: transform 0.2s;
     }
 
     .help-card h3 {
@@ -154,6 +153,34 @@
       line-height: 1.5;
       color: var(--text-main);
       white-space: pre-wrap;
+    }
+
+    .media-container {
+      margin-top: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .media-container img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
 
     .delete-btn {
@@ -191,7 +218,10 @@
       <p class="subtitle">Pubblica una nuova risorsa o numero utile</p>
       
       <div class="form-group">
-        <input type="text" id="postTitle" placeholder="Titolo del post (es. Telefono Amico)" required>
+        <input type="text" id="postTitle" placeholder="Titolo del post..." required>
+      </div>
+      <div class="form-group">
+        <input type="text" id="postMediaUrl" placeholder="URL immagine o video YouTube (opzionale)...">
       </div>
       <div class="form-group">
         <textarea id="postContent" placeholder="Testo del post, contatti o spiegazione..." required></textarea>
@@ -243,6 +273,32 @@
       loadPosts();
     });
 
+    function formatMedia(url) {
+      if (!url) return "";
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let videoId = "";
+        if (url.includes("youtu.be/")) {
+          videoId = url.split("youtu.be/")[1]?.split("?")[0];
+        } else if (url.includes("watch?v=")) {
+          videoId = url.split("watch?v=")[1]?.split("&")[0];
+        }
+        if (videoId) {
+          return `
+            <div class="media-container">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+              </div>
+            </div>
+          `;
+        }
+      }
+      return `
+        <div class="media-container">
+          <img src="${url}" alt="Allegato multimediale">
+        </div>
+      `;
+    }
+
     async function loadPosts() {
       const list = document.getElementById('postsList');
       list.innerHTML = "";
@@ -270,6 +326,7 @@
       posts.forEach((post) => {
         const card = document.createElement('div');
         card.className = 'help-card';
+        const mediaHTML = formatMedia(post.mediaUrl);
         
         let deleteBtnHTML = "";
         if (currentUser && ADMIN_UIDS.includes(currentUser.uid)) {
@@ -279,6 +336,7 @@
         card.innerHTML = `
           <h3>${post.title}</h3>
           <p>${post.content}</p>
+          ${mediaHTML}
           ${deleteBtnHTML}
         `;
         list.appendChild(card);
@@ -297,6 +355,7 @@
     document.getElementById('publishBtn').addEventListener('click', async () => {
       const title = document.getElementById('postTitle').value.trim();
       const content = document.getElementById('postContent').value.trim();
+      const mediaUrl = document.getElementById('postMediaUrl').value.trim();
       const statusMsg = document.getElementById('statusMsg');
 
       if (!title || !content) {
@@ -309,11 +368,13 @@
         await addDoc(collection(db, "help_posts"), {
           title: title,
           content: content,
+          mediaUrl: mediaUrl,
           createdAt: serverTimestamp()
         });
 
         document.getElementById('postTitle').value = "";
         document.getElementById('postContent').value = "";
+        document.getElementById('postMediaUrl').value = "";
         statusMsg.textContent = "Post pubblicato con successo!";
         statusMsg.style.color = "#38ef7d";
         loadPosts();
