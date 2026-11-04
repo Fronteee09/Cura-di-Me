@@ -227,9 +227,18 @@
 
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
-      if (user && user.displayName === ADMIN_NICKNAME) {
-        document.getElementById('adminSection').style.display = 'block';
-        loadPendingStories();
+      console.log("Utente loggato:", user ? user.displayName : "Nessuno");
+
+      if (user) {
+        document.querySelector('.subtitle').textContent = `Connesso come: ${user.displayName || user.email}`;
+        
+        if (user.displayName === ADMIN_NICKNAME) {
+          console.log("Riconosciuto come Admin! Apro il pannello.");
+          document.getElementById('adminSection').style.display = 'block';
+          loadPendingStories();
+        } else {
+          console.log("L'utente non corrisponde all'admin. Nome letto:", `"${user.displayName}"`);
+        }
       }
       loadPublishedStories();
     });
@@ -269,46 +278,54 @@
     async function loadPublishedStories() {
       const list = document.getElementById('publishedStoriesList');
       list.innerHTML = "";
-      const q = query(collection(db, "stories"), where("approved", "==", true));
-      const querySnapshot = await getDocs(q);
+      try {
+        const q = query(collection(db, "stories"), where("approved", "==", true));
+        const querySnapshot = await getDocs(q);
 
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const card = document.createElement('div');
-        card.className = 'story-card';
-        card.innerHTML = `
-          <div class="story-header">
-            <span>Autore: ${data.author}</span>
-          </div>
-          <p class="story-text">${data.text}</p>
-        `;
-        list.appendChild(card);
-      });
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const card = document.createElement('div');
+          card.className = 'story-card';
+          card.innerHTML = `
+            <div class="story-header">
+              <span>Autore: ${data.author}</span>
+            </div>
+            <p class="story-text">${data.text}</p>
+          `;
+          list.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Errore caricamento storie pubblicate:", err);
+      }
     }
 
     // Carica storie da approvare (Solo Admin)
     async function loadPendingStories() {
       const list = document.getElementById('pendingStoriesList');
       list.innerHTML = "";
-      const q = query(collection(db, "stories"), where("approved", "==", false));
-      const querySnapshot = await getDocs(q);
+      try {
+        const q = query(collection(db, "stories"), where("approved", "==", false));
+        const querySnapshot = await getDocs(q);
 
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const card = document.createElement('div');
-        card.className = 'story-card';
-        card.innerHTML = `
-          <div class="story-header">
-            <span>Autore: ${data.author} (${data.authorEmail})</span>
-          </div>
-          <p class="story-text">${data.text}</p>
-          <div class="admin-controls">
-            <button class="btn-approve" onclick="approveStory('${docSnap.id}')">Pubblica</button>
-            <button class="btn-delete" onclick="deleteStory('${docSnap.id}')">Elimina</button>
-          </div>
-        `;
-        list.appendChild(card);
-      });
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const card = document.createElement('div');
+          card.className = 'story-card';
+          card.innerHTML = `
+            <div class="story-header">
+              <span>Autore: ${data.author} (${data.authorEmail})</span>
+            </div>
+            <p class="story-text">${data.text}</p>
+            <div class="admin-controls">
+              <button class="btn-approve" onclick="approveStory('${docSnap.id}')">Pubblica</button>
+              <button class="btn-delete" onclick="deleteStory('${docSnap.id}')">Elimina</button>
+            </div>
+          `;
+          list.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Errore caricamento storie in attesa (controlla le regole Firestore!):", err);
+      }
     }
 
     window.approveStory = async (id) => {
