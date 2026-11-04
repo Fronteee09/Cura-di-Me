@@ -71,9 +71,8 @@
       margin-bottom: 30px;
     }
 
-    textarea {
+    textarea, input[type="text"] {
       width: 100%;
-      height: 120px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
       border-radius: 12px;
@@ -81,11 +80,15 @@
       color: #fff;
       font-size: 0.95rem;
       outline: none;
+    }
+
+    textarea {
+      height: 120px;
       resize: vertical;
       margin-bottom: 12px;
     }
 
-    textarea:focus {
+    textarea:focus, input[type="text"]:focus {
       border-color: var(--accent-green);
       box-shadow: 0 0 10px var(--accent-green-glow);
     }
@@ -131,8 +134,37 @@
       color: var(--text-main);
     }
 
+    /* Nota/Risposta dell'Admin evidenziata */
+    .admin-note-box {
+      margin-top: 12px;
+      padding: 12px 15px;
+      background: rgba(46, 204, 113, 0.12);
+      border-left: 3px solid var(--accent-green);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(46, 204, 113, 0.15);
+    }
+
+    .admin-note-header {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #38ef7d;
+      margin-bottom: 4px;
+    }
+
+    .admin-note-text {
+      font-size: 0.9rem;
+      color: #e8f5e9;
+      line-height: 1.4;
+    }
+
     .admin-controls {
-      margin-top: 10px;
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .admin-actions {
       display: flex;
       gap: 10px;
     }
@@ -221,23 +253,18 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const ADMIN_NICKNAME = "Fronte ★";
-
+    const ADMIN_UID = "KPs3CF0LcVhpteRaqigaubP1S9l1";
     let currentUser = null;
 
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
-      console.log("Utente loggato:", user ? user.displayName : "Nessuno");
 
       if (user) {
         document.querySelector('.subtitle').textContent = `Connesso come: ${user.displayName || user.email}`;
         
-        if (user.displayName === ADMIN_NICKNAME) {
-          console.log("Riconosciuto come Admin! Apro il pannello.");
+        if (user.uid === ADMIN_UID) {
           document.getElementById('adminSection').style.display = 'block';
           loadPendingStories();
-        } else {
-          console.log("L'utente non corrisponde all'admin. Nome letto:", `"${user.displayName}"`);
         }
       }
       loadPublishedStories();
@@ -262,6 +289,7 @@
           author: currentUser.displayName || "Anonimo",
           authorEmail: currentUser.email,
           approved: false,
+          adminNote: "",
           createdAt: serverTimestamp()
         });
 
@@ -286,11 +314,33 @@
           const data = docSnap.data();
           const card = document.createElement('div');
           card.className = 'story-card';
+
+          let noteHTML = "";
+          if (data.adminNote && data.adminNote.trim() !== "") {
+            noteHTML = `
+              <div class="admin-note-box">
+                <div class="admin-note-header">★ Nota di Fronte ★</div>
+                <div class="admin-note-text">${data.adminNote}</div>
+              </div>
+            `;
+          }
+
+          let deleteBtnHTML = "";
+          if (currentUser && currentUser.uid === ADMIN_UID) {
+            deleteBtnHTML = `
+              <div class="admin-controls" style="margin-top:10px;">
+                <button class="btn-delete" onclick="deleteStory('${docSnap.id}')">Elimina Storia Pubblicata</button>
+              </div>
+            `;
+          }
+
           card.innerHTML = `
             <div class="story-header">
               <span>Autore: ${data.author}</span>
             </div>
             <p class="story-text">${data.text}</p>
+            ${noteHTML}
+            ${deleteBtnHTML}
           `;
           list.appendChild(card);
         });
@@ -317,26 +367,42 @@
             </div>
             <p class="story-text">${data.text}</p>
             <div class="admin-controls">
-              <button class="btn-approve" onclick="approveStory('${docSnap.id}')">Pubblica</button>
-              <button class="btn-delete" onclick="deleteStory('${docSnap.id}')">Elimina</button>
+              <input type="text" id="note-${docSnap.id}" placeholder="Nota/Risposta dell'Admin (opzionale)...">
+              <div class="admin-actions">
+                <button class="btn-approve" onclick="approveStory('${docSnap.id}')">Pubblica</button>
+                <button class="btn-delete" onclick="deleteStory('${docSnap.id}')">Elimina</button>
+              </div>
             </div>
           `;
           list.appendChild(card);
         });
       } catch (err) {
-        console.error("Errore caricamento storie in attesa (controlla le regole Firestore!):", err);
+        console.error("Errore caricamento storie in attesa:", err);
       }
     }
 
+    // Approvazione storia con nota opzionale
     window.approveStory = async (id) => {
-      await updateDoc(doc(db, "stories", id), { approved: true });
+      const noteInput = document.getElementById(`note-${id}`);
+      const adminNote = noteInput ? noteInput.value.trim() : "";
+
+      await updateDoc(doc(db, "stories", id), { 
+        approved: true,
+        adminNote: adminNote 
+      });
       loadPendingStories();
       loadPublishedStories();
     };
 
+    // Eliminazione storia
     window.deleteStory = async (id) => {
-      await deleteDoc(doc(db, "stories", id));
-      loadPendingStories();
+      if (confirm("Vuoi davvero eliminare questa storia?")) {
+        await deleteDoc(doc(db, "stories", id));
+        if (currentUser && currentUser.uid === ADMIN_UID) {
+          loadPendingStories();
+        }
+        loadPublishedStories();
+      }
     };
   </script>
 </body>
