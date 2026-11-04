@@ -213,24 +213,26 @@
       <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cerca nei titoli o nel testo...">
     </div>
 
-    <!-- Pannello Admin (display: block per renderlo sempre visibile in fase di test) -->
+    <!-- Pannello Admin (Sempre visibile per test) -->
     <section id="adminSection" class="admin-panel" style="display: block;">
       <h2>Pannello Admin</h2>
       <p class="subtitle">Pubblica una nuova risorsa o numero utile</p>
       
+      <!-- 1. Titolo -->
       <div class="form-group">
         <input type="text" id="postTitle" placeholder="Titolo del post (es. Telefono Amico)" required>
       </div>
-      
-      <!-- CAMPO URL MEDIA (Imgur / YouTube) -->
-      <div class="form-group">
-        <input type="text" id="postMediaUrl" placeholder="URL Imgur, immagine o video YouTube (opzionale)...">
-      </div>
 
+      <!-- 2. Corpo del testo -->
       <div class="form-group">
         <textarea id="postContent" placeholder="Testo del post, contatti o spiegazione..." required></textarea>
       </div>
       
+      <!-- 3. Box Link sotto al corpo -->
+      <div class="form-group">
+        <input type="text" id="postMediaUrl" placeholder="URL Imgur, immagine o video YouTube (opzionale)...">
+      </div>
+
       <button id="publishBtn" class="btn">Pubblica Post</button>
       <div id="statusMsg" style="margin-top: 10px; font-size: 0.85rem; text-align: center;"></div>
     </section>
@@ -281,7 +283,6 @@
     function formatMedia(url) {
       if (!url) return "";
 
-      // YouTube Embed
       if (url.includes("youtube.com") || url.includes("youtu.be")) {
         let videoId = "";
         if (url.includes("youtu.be/")) {
@@ -300,7 +301,6 @@
         }
       }
 
-      // Imgur Link Handling
       let imageUrl = url;
       if (url.includes("imgur.com") && !url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
         const imgurId = url.split("/").pop();
