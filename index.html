@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cura di Me</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="curadime.jpeg">
+  
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --text-main: #2c3e50;
+      --text-muted: #667c8a;
+      --btn-blue: #3498db;
+      --btn-blue-hover: #2980b9;
+      --btn-green: #2ecc71;
+      --btn-green-hover: #27ae60;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Box centrale responsive */
+    .container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 480px;
+      padding: 35px 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .description {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    /* Sezione Pulsanti */
+    .buttons-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      color: #ffffff;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-blue {
+      background-color: var(--btn-blue);
+    }
+
+    .btn-blue:hover {
+      background-color: var(--btn-blue-hover);
+    }
+
+    .btn-green {
+      background-color: var(--btn-green);
+    }
+
+    .btn-green:hover {
+      background-color: var(--btn-green-hover);
+    }
+
+    /* Footer / Disclaimer */
+    footer {
+      margin-top: 30px;
+      font-size: 0.75rem;
+      color: #a0aec0;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <!-- Logo -->
+    <img src="curadime.jpeg" alt="Logo Cura di Me" class="logo">
+
+    <!-- Titolo e Descrizione -->
+    <h1>Cura di Me</h1>
+    <p class="description">
+      Un progetto open source incentrato sul benessere personale, sociale e relazionale. 
+      Una raccolta di risorse, storie condivise e spunti pratici per prendersi cura di sé giorno dopo giorno.
+    </p>
+
+    <!-- Pulsanti di navigazione -->
+    <nav class="buttons-container">
+      <a href="storie.html" class="btn btn-blue">Visualizza Storie</a>
+      <a href="aiuto.html" class="btn btn-blue">Aiuto</a>
+      <a href="account.html" class="btn btn-green">Account</a>
+    </nav>
+
+    <!-- Piccola nota informativa -->
+    <footer>
+      Cura di Me è uno strumento di self-care e journaling. Non fornisce consulenze mediche o psicologiche.
+    </footer>
+  </main>
+
+</body>
+</html>
