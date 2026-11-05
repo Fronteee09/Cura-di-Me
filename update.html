@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cura di Me - Update & Annunci</title>
+  <link rel="icon" type="image/jpeg" href="curadime.jpeg">
+  
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0a0f0d 0%, #071318 50%, #051a15 100%);
+      --card-bg: rgba(18, 30, 26, 0.65);
+      --card-border: rgba(46, 204, 113, 0.25);
+      --text-main: #e8f5e9;
+      --text-muted: #a3c2b5;
+      --accent-green: #2ecc71;
+      --accent-green-glow: rgba(46, 204, 113, 0.4);
+      --btn-blue-text: #3498db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+
+    .container {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid var(--card-border);
+      width: 100%;
+      max-width: 650px;
+      padding: 35px 25px;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 25px;
+    }
+
+    .admin-panel {
+      border: 1px dashed var(--accent-green);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      background: rgba(46, 204, 113, 0.05);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green-glow);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(46, 204, 113, 0.6);
+      background: rgba(46, 204, 113, 0.35);
+      color: #38ef7d;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .btn:hover {
+      background: rgba(46, 204, 113, 0.6);
+      color: #fff;
+      box-shadow: 0 0 15px var(--accent-green-glow);
+    }
+
+    .update-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .update-card h3 {
+      color: var(--accent-green);
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .update-card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-main);
+      white-space: pre-wrap;
+    }
+
+    .media-container {
+      margin-top: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .media-container img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .delete-btn {
+      margin-top: 12px;
+      background: rgba(231, 76, 60, 0.4);
+      border: 1px solid #e74c3c;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      color: var(--btn-blue-text);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <h1>Aggiornamenti & Novità</h1>
+    <p class="subtitle" id="userStatus">Ultime notizie dal progetto Cura di Me.</p>
+
+    <!-- Pannello Admin (Visibile solo ai due amministratori autorizzati) -->
+    <section id="adminSection" class="admin-panel" style="display: none;">
+      <h2>Pannello Admin (Update)</h2>
+      <p class="subtitle">Pubblica una novità o un aggiornamento</p>
+      
+      <div class="form-group">
+        <input type="text" id="postTitle" placeholder="Titolo dell'aggiornamento (es. Nuova funzione in arrivo)" required>
+      </div>
+      
+      <div class="form-group">
+        <textarea id="postContent" placeholder="Descrivi le novità..." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="postMediaUrl" placeholder="URL Imgur, immagine o video YouTube (opzionale)...">
+      </div>
+
+      <button id="publishBtn" class="btn">Pubblica Aggiornamento</button>
+      <div id="statusMsg" style="margin-top: 10px; font-size: 0.85rem; text-align: center;"></div>
+    </section>
+
+    <h2>Tutti gli Update</h2>
+    <div id="updatesList" style="margin-top: 15px;"></div>
+
+    <a href="index.html" class="back-link">← Torna alla Home</a>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyACDhEfI-bOGmGlO2z_-QwOexXV3UAKcIo",
+      authDomain: "curadite-6d9f9.firebaseapp.com",
+      projectId: "curadite-6d9f9",
+      storageBucket: "curadite-6d9f9.firebasestorage.app",
+      messagingSenderId: "822428953344",
+      appId: "1:822428953344:web:a943ae406889943d4021e5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const ADMIN_UIDS = [
+      "KPs3CF0LcVhpteRaqigaubP1S9l1",
+      "YeRauosaTfZS7hbySLdtNXgSHV22"
+    ];
+
+    let currentUser = null;
+    let allUpdates = [];
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      if (user && ADMIN_UIDS.includes(user.uid)) {
+        document.getElementById('adminSection').style.display = 'block';
+        document.getElementById('userStatus').textContent = "Modalità Admin Attiva";
+      }
+      loadUpdates();
+    });
+
+    function formatMedia(url) {
+      if (!url) return "";
+
+      // YouTube
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let videoId = "";
+        if (url.includes("youtu.be/")) {
+          videoId = url.split("youtu.be/")[1]?.split("?")[0];
+        } else if (url.includes("watch?v=")) {
+          videoId = url.split("watch?v=")[1]?.split("&")[0];
+        }
+        if (videoId) {
+          return `
+            <div class="media-container">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Imgur
+      let imageUrl = url;
+      if (url.includes("imgur.com") && !url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
+        const imgurId = url.split("/").pop();
+        imageUrl = `https://i.imgur.com/${imgurId}.png`;
+      }
+
+      return `
+        <div class="media-container">
+          <img src="${imageUrl}" alt="Allegato multimediale">
+        </div>
+      `;
+    }
+
+    async function loadUpdates() {
+      const list = document.getElementById('updatesList');
+      list.innerHTML = "";
+      try {
+        const querySnapshot = await getDocs(collection(db, "project_updates"));
+        allUpdates = [];
+        querySnapshot.forEach((docSnap) => {
+          allUpdates.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        
+        // Ordina dal più recente (se hanno il timestamp)
+        allUpdates.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+        renderUpdates(allUpdates);
+      } catch (err) {
+        console.error("Errore caricamento update:", err);
+      }
+    }
+
+    function renderUpdates(updates) {
+      const list = document.getElementById('updatesList');
+      list.innerHTML = "";
+
+      if (updates.length === 0) {
+        list.innerHTML = `<p style="text-align: center; color: var(--text-muted);">Nessun aggiornamento pubblicato finora.</p>`;
+        return;
+      }
+
+      updates.forEach((update) => {
+        const card = document.createElement('div');
+        card.className = 'update-card';
+        const mediaHTML = formatMedia(update.mediaUrl);
+        
+        let deleteBtnHTML = "";
+        if (currentUser && ADMIN_UIDS.includes(currentUser.uid)) {
+          deleteBtnHTML = `<button class="delete-btn" onclick="deleteUpdate('${update.id}')">Elimina Update</button>`;
+        }
+
+        card.innerHTML = `
+          <h3>${update.title}</h3>
+          <p>${update.content}</p>
+          ${mediaHTML}
+          ${deleteBtnHTML}
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    document.getElementById('publishBtn').addEventListener('click', async () => {
+      const title = document.getElementById('postTitle').value.trim();
+      const content = document.getElementById('postContent').value.trim();
+      const mediaUrl = document.getElementById('postMediaUrl').value.trim();
+      const statusMsg = document.getElementById('statusMsg');
+
+      if (!title || !content) {
+        statusMsg.textContent = "Compila sia il titolo che il testo!";
+        statusMsg.style.color = "#e74c3c";
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "project_updates"), {
+          title: title,
+          content: content,
+          mediaUrl: mediaUrl,
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById('postTitle').value = "";
+        document.getElementById('postContent').value = "";
+        document.getElementById('postMediaUrl').value = "";
+        statusMsg.textContent = "Aggiornamento pubblicato!";
+        statusMsg.style.color = "#38ef7d";
+        loadUpdates();
+      } catch (e) {
+        statusMsg.textContent = "Errore: " + e.message;
+        statusMsg.style.color = "#e74c3c";
+      }
+    });
+
+    window.deleteUpdate = async (id) => {
+      if (confirm("Vuoi davvero eliminare questo aggiornamento?")) {
+        await deleteDoc(doc(db, "project_updates", id));
+        loadUpdates();
+      }
+    };
+  </script>
+</body>
+</html>
